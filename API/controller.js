@@ -30,7 +30,7 @@ const register = (req, res) => {
 
         db.collection('users').insertOne(data, (err, collection) => {
             if(err) return res.status(401).send("Error While Registration")
-            return res.status(200).send("Registration Successfull")
+            res.redirect('/login')
         })
     })
 }
@@ -38,6 +38,7 @@ const register = (req, res) => {
 const login = (req, res) => {
    db.collection('users').findOne({"email": req.body.email}, (err, user) => {
        if(err) return res.status(401).send("Invalid Login")
+       if(!user) return res.redirect('/register');
        if(!bcrypt.compareSync(req.body.password, user.password)) return res.status(401).send("Invalid Login")
        var token = jwt.sign({
            id:  user._id
@@ -45,8 +46,8 @@ const login = (req, res) => {
            expiresIn: 86400
        }
        );
-       console.log(token)
-       return res.status(200).send(token)
+       res.cookie('auth',token);
+       res.redirect('/')
    })
 }
 
@@ -95,4 +96,22 @@ const verifyToken = (req, res, next) => {
       }
 }
 
-module.exports = {register, login, validator, stats, verifyToken}
+const verifyAuth = (req, res, next) => {
+    var token = req.cookies.auth;
+    if (token) {
+      jwt.verify(token, 'SECRET_KEY', function(err, token_data) {
+          if(req.path == "/login" || req.path == "/signup") return res.redirect('/')
+            next()
+      });
+    } else {
+        if(req.path == "/") return res.redirect('/login');
+         next()
+    }
+}
+
+const signOut = (req, res, next) => {
+    res.cookie('auth', '', {expires: new Date(0)});
+    res.redirect('/login')
+}
+
+module.exports = {register, login, validator, stats, verifyToken, verifyAuth, signOut}
