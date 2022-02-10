@@ -5,4 +5,6 @@ var router = require('./router.js');
 
 app.use('/', router);
 
-app.listen(3000);
+app.listen(3000, (port) => {
+   console.log("App Is Listening")
+});
