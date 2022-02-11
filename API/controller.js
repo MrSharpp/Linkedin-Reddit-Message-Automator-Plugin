@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const { use } = require('./router');
 const { ObjectId } = require('mongodb');
 const res = require('express/lib/response');
+const { redirect } = require('express/lib/response');
 
 
 mongoose.connect('mongodb://localhost:27017/linkedin');
@@ -24,8 +25,8 @@ const register = (req, res) => {
     }
 
     db.collection('users').findOne({"email": req.body.email}, (err, user) => {
-        if(err) return res.status(401).send("Some Error")
-        if(user) return res.status(409).send("User Already Exists")
+        if(err) return res.redirect('/signup?error='+ encodeURIComponent('Something Wrong!'))
+        if(user) return res.redirect('/signup?error=' + encodeURIComponent('Email Already Exists! Please Login'))
    
 
         db.collection('users').insertOne(data, (err, collection) => {
@@ -37,9 +38,9 @@ const register = (req, res) => {
 
 const login = (req, res) => {
    db.collection('users').findOne({"email": req.body.email}, (err, user) => {
-       if(err) return res.status(401).send("Invalid Login")
-       if(!user) return res.redirect('/register');
-       if(!bcrypt.compareSync(req.body.password, user.password)) return res.status(401).send("Invalid Login")
+       if(err) return res.redirect('/login?error=' + encodeURIComponent('Invalid Login'))
+       if(!user) return res.redirect('/login?error=' + encodeURIComponent('User Doesnt Exist! Please Make An Account'))
+       if(!bcrypt.compareSync(req.body.password, user.password)) return res.redirect('/login?error=' + encodeURIComponent('Password Incorrect'))
        var token = jwt.sign({
            id:  user._id
        },"SECRET_KEY",{
@@ -52,7 +53,10 @@ const login = (req, res) => {
 }
 
 const validator = (req, res, next) => {
-    if(!req.body.email || !req.body.password) return res.status(400).send("Bad Request")
+    if(!req.body.email || !req.body.password) {
+        if(req.path == "/login") return res.redirect("/login?error="+ "Please Fill All The Details");
+        else return res.redirect("/signup?error="+ "Please Fill All The Details");
+    }
     next()
 }
 
@@ -63,14 +67,20 @@ const stats = async (req, res) => {
     var connections = parseInt(req.body.connections);
     var comments = parseInt(req.body.comments);
     var dms = parseInt(req.body.dms);
+
+    var redditComments = parseInt(req.body.dms);
+    var redditDms = parseInt(req.body.dms);
+
     var user = await db.collection('stats').findOne({userid: req.user._id});
-    console.log(connections)
     if(!user){
-      user = await db.collection('stats').insertOne({userid: req.user._id, connections: 0, comments: 0, dms: 0});
+      user = await db.collection('stats').insertOne({userid: req.user._id, connections: 0, comments: 0, redditComments: 0, redditDms: 0,dms: 0});
     }
     if(connections) user.connections = connections + parseInt(user.connections || 0);
     if(comments) user.comments = comments + parseInt(user.comments || 0 );
-    if(dms) user.dms =  dms+ parseInt(user.dms || 0);
+    if(dms) user.dms =  dms + parseInt(user.dms || 0);
+
+    if(redditComments) user.redditComments =  redditComments + parseInt(user.redditComments || 0);
+    if(redditDms) user.redditDms =  redditDms + parseInt(user.redditDms || 0);
 
 
     db.collection('stats').updateOne({userid: req.user._id}, {$set:user}, (err, data) => {

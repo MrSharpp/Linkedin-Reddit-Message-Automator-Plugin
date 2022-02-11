@@ -5,7 +5,7 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Star Admin2 </title>
+  <title>LinkEx | Signup </title>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
   <!-- plugins:css -->
   <link rel="stylesheet" href="../../vendors/feather/feather.css">
@@ -31,7 +31,7 @@
           <div class="col-lg-4 mx-auto">
             <div class="auth-form-light text-left py-5 px-4 px-sm-5">
               <div class="brand-logo">
-                <img src="../../images/logo.svg" alt="logo">
+                <h3 style="font-weight: bold;">LinkEx</h3>
               </div>
               <h4>Hello! let's get started</h4>
               <h6 class="fw-light">Register</h6>
@@ -48,9 +48,13 @@
                 <div class="mt-3">
                   <input type="button" id="sumbitBUtton" class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" value="SIGN UP">
                 </div>
+                <div class="alert alert-danger mt-3" hidden role="alert" id="error">
+                  This is a primary alert—check it out!
+                </div>
                 <div class="text-center mt-4 fw-light">
                   Already have an account? <a href="/login" class="text-primary">Login</a>
                 </div>
+              
               </form>
             </div>
           </div>
@@ -75,7 +79,17 @@
       $("#signup").submit()
     });
 
-    
+    function getUrlParameter(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+
+    if(getUrlParameter('error')){
+      $("#error").attr('hidden', false);
+      $("#error").html(getUrlParameter('error'))
+    }
   </script>
   <!-- container-scroller -->
   <!-- plugins:js -->
