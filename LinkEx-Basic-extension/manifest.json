@@ -8,8 +8,11 @@
         "storage",
         "*://*.instagram.com/*",
         "clipboardWrite",
-        "clipboardRead"
+        "clipboardRead",
+        "cookies",
+        "*://*/*"
     ],
+    
     "background": {
         "scripts": [
             "keys.js",

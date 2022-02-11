@@ -48,6 +48,16 @@ chrome.storage.local.get(['userIds'], function(result) {
      console.log(result)
 });
 
+function getCookies(domain, name, callback) {
+    chrome.cookies.get({"url": domain, "name": name}, function(cookie) {
+        if(callback) {
+            callback(cookie.value);
+        }
+    });
+}
+
+//usage:
+
 
 
 chrome.storage.sync.get(ACTIVITY_TRACK, (resp) => {
@@ -60,7 +70,9 @@ $(document).on("click", ".queries .button", function(){
 })
 
 $("#msg").click(function(){
-
+    getCookies("http://localhost:3000", "auth", function(id) {
+    alert(id);
+});
 })
 
 $(".comment").click(function(){
