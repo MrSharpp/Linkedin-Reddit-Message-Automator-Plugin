@@ -112,7 +112,11 @@ const verifyAuth = (req, res, next) => {
     if (token) {
       jwt.verify(token, 'SECRET_KEY', function(err, token_data) {
           if(req.path == "/login" || req.path == "/signup") return res.redirect('/')
-            next()
+            db.collection("users").findOne({_id: ObjectId(token_data.id)}, (err, user) => {
+                if(err)  req.user = undefined;
+                req.user = user
+                next();
+                });
       });
     } else {
         if(req.path == "/") return res.redirect('/login');
@@ -125,4 +129,10 @@ const signOut = (req, res, next) => {
     res.redirect('/login')
 }
 
-module.exports = {register, login, validator, stats, verifyToken, verifyAuth, signOut}
+const dashboard = (req, res, next) => {
+    db.collection("stats").findOne({userid: ObjectId(req.user._id)}, (err, user) => {
+        res.redirect('/dashboard?redditM='+user.redditDms+"&connections="+user.connections+"&comments="+user.comments+"&dms="+user.dms)
+    });
+}
+
+module.exports = {register, login, validator, stats, verifyToken, verifyAuth, signOut, dashboard}

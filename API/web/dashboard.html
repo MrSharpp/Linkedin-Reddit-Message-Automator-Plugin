@@ -179,15 +179,15 @@
                         <div class="statistics-details d-flex align-items-center justify-content-between">
                           <div>
                             <p class="statistics-title">Connections</p>
-                            <h3 class="rate-percentage">0</h3>
+                            <h3 class="rate-percentage" id="connections">0</h3>
                           </div>
                           <div>
-                            <p class="statistics-title">Comments</p>
-                            <h3 class="rate-percentage">0</h3>
+                            <p class="statistics-title" >Comments</p>
+                            <h3 class="rate-percentage" id="comments">0</h3>
                           </div>
                           <div>
                             <p class="statistics-title">DMs</p>
-                            <h3 class="rate-percentage">0</h3>
+                            <h3 class="rate-percentage" id="dms">0</h3>
                           </div>
                           <div class="d-none d-md-block">
                           
@@ -204,12 +204,11 @@
                         <h1>Reddit</h1>
                         <div class="statistics-details d-flex align-items-center justify-content-between">
                           <div>
-                            <p class="statistics-title">Comments On Posts</p>
-                            <h3 class="rate-percentage">7,682</h3>
+                            <p class="statistics-title">User Messaged</p>
+                            <h3 class="rate-percentage" id="messagesReddit">0</h3>
                           </div>
                           <div>
-                            <p class="statistics-title">User Messaged</p>
-                            <h3 class="rate-percentage">7,682</h3>
+                         
                           </div>
                           <div>
                           </div>
@@ -262,6 +261,41 @@
     <!-- page-body-wrapper ends -->
   </div>
   <!-- container-scroller -->
+
+  <script>
+    var url_string = window.location.href
+    var url = new URL(url_string);
+    var redditM = url.searchParams.get("redditM");
+    var connections = url.searchParams.get("connections");
+    var comments = url.searchParams.get("comments");
+    var dms = url.searchParams.get("dms");
+
+
+    if(redditM){
+      document.getElementById('messagesReddit').innerHTML = redditM
+    } else{
+      document.getElementById('messagesReddit').innerHTML = 0
+    }
+
+    if(connections){
+      document.getElementById('connections').innerHTML = connections
+    } else{
+      document.getElementById('connections').innerHTML = 0
+    }
+
+    if(comments){
+      document.getElementById('comments').innerHTML = comments
+    } else{
+      document.getElementById('comments').innerHTML = 0
+    }
+
+    if(dms){
+      document.getElementById('dms').innerHTML = dms
+    } else{
+      document.getElementById('dms').innerHTML = 0
+      document.location.href="/";
+    }
+  </script>
 
   <!-- plugins:js -->
   <script src="vendors/js/vendor.bundle.base.js"></script>
