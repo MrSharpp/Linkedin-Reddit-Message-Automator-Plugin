@@ -89,6 +89,10 @@ $("#redditButton").click(() => {
   
 })
 
+$("#linkedInButton").click(() => {
+    chrome.tabs.update({url: "https://www.linkedin.com/search/results/people/?keywords=marketing"})
+})
+
 function reddit(){
     alert("#")
 }

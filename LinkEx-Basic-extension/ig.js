@@ -39,7 +39,11 @@ window.onload = async function  exampleFunction() {
 
         }
     }
-    else if (_url.search("") > -1) {
+    else if (_url.search("keywords") > -1) {
+        document.getElementsByClassName('artdeco-pill')[1].click()
+        const companies = document.getElementsByClassName('entity-result__title-text')
+        document.getElementsByClassName('artdeco-pill')[4].click()
+        document.getElementsByClassName('mt1')[2].value = "Manager"
         
     }
 }
