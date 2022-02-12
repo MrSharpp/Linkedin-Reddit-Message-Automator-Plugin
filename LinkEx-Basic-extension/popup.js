@@ -7,8 +7,18 @@ let totalNum = 0;
 //     "width=400,height=400"
 // );
 
+chrome.tabs.onUpdated.addListener(function (tabId , info) {
+    if (info.status === 'complete') {
+        var hi = document.getElementsByClassName('_3TG57N4WQtubLLo8SbAXVF');
+        console.log(hi[0])
+    }
+  });
 
 
+document.addEventListener('DOMContentLoaded', function(){
+    var hi = document.getElementsByClassName('_3TG57N4WQtubLLo8SbAXVF');
+        console.log(hi[0])
+  });
 
 $(".follow").click(function(){
 
@@ -70,10 +80,24 @@ $(document).on("click", ".queries .button", function(){
 })
 
 $("#msg").click(function(){
-    getCookies("http://localhost:3000", "auth", function(id) {
-    alert(id);
-});
+    
 })
+
+$("#redditButton").click(() => {
+    chrome.tabs.update({url: "https://www.reddit.com/r/SocialMediaMarketing?comment=1" })
+          
+  
+})
+
+function reddit(){
+    alert("#")
+}
+
+function openTab(){
+        let redditLink = "https://www.reddit.com/r/SocialMediaMarketing" 
+        chrome.tabs.create ({url: redditLink, 
+        selected: true});
+};
 
 $(".comment").click(function(){
 

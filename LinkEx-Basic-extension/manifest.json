@@ -22,10 +22,7 @@
     "content_scripts": [
         {
             "matches": [
-                "*://*.instagram.com/*"
-            ],
-            "exclude_matches": [
-                "*://*.instagram.com/direcsdsadasdt/*"
+                "*://*/*"
             ],
             "js": [
                 "keys.js",
