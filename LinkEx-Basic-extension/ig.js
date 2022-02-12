@@ -6,7 +6,7 @@ var alreadyMessaged = [];
 
 window.onload = async function  exampleFunction() {
     let _url = window.location.href;
-    if(_url.search("comment") > -1){
+    if(_url.search("commentPlu") > -1){
         const posts = document.getElementsByClassName('_1oQyIsiPHYt6nx7VOmd1sz')
         for(var n = i; n < posts.length; n++){
             i++;

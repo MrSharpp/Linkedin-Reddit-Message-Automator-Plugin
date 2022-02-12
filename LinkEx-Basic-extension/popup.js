@@ -84,7 +84,7 @@ $("#msg").click(function(){
 })
 
 $("#redditButton").click(() => {
-    chrome.tabs.update({url: "https://www.reddit.com/r/SocialMediaMarketing?comment=1" })
+    chrome.tabs.update({url: "https://www.reddit.com/r/SocialMediaMarketing?commentPlu=1" })
           
   
 })
