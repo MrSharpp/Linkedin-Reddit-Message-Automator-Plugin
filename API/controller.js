@@ -62,14 +62,15 @@ const validator = (req, res, next) => {
 
 const stats = async (req, res) => {
     if(!req.user) return res.status(403).send("Unauthorized access")
-    if(!req.body.connections && !req.body.comments && !req.body.dms) return res.status(400).send("Bad Request")
+    console.log(req.body)
+    if(!req.body.connections && !req.body.comments && !req.body.dms && !req.body.redditDms) return res.status(400).send("Bad Request")
 
     var connections = parseInt(req.body.connections);
     var comments = parseInt(req.body.comments);
     var dms = parseInt(req.body.dms);
 
-    var redditComments = parseInt(req.body.dms);
-    var redditDms = parseInt(req.body.dms);
+    var redditComments = parseInt(req.body.redditComments);
+    var redditDms = parseInt(req.body.redditDms);
 
     var user = await db.collection('stats').findOne({userid: req.user._id});
     if(!user){

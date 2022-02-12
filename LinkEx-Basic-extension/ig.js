@@ -3,6 +3,11 @@ var users;
 var i = 0;
 var f = 0;
 var alreadyMessaged = [];
+var xhr = new XMLHttpRequest();
+xhr.open("POST", "http://localhost:3000/stats", true);
+xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+xhr.setRequestHeader("authorization", "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyMDU2YzlhMWZiZTM3MTY2NTA0Mzc1OCIsImlhdCI6MTY0NDY2NzcwMiwiZXhwIjoxNjQ0NzU0MTAyfQ.K1pXyBWnyvW6yyRMEzMOefUcA_cU5gQzfuR5ZBlqsY8", true);
+
 
 window.onload = async function  exampleFunction() {
     let _url = window.location.href;
@@ -13,7 +18,13 @@ window.onload = async function  exampleFunction() {
             posts[n].click()
             await sleep(3000);
             const users = document.getElementsByClassName('wM6scouPXXsFDSZmZPHRo')
+            var apiCount = 1;
             for(var k = f; k < users.length;k++){
+                apiCount--;
+                if(apiCount < 1) {
+                    sendToApi("redditDms=1")
+                    apiCount = 3;
+                }
                 if(alreadyMessaged.includes(users[k].text)) continue;
                 alreadyMessaged.push(users[k].text);
                 f++;
@@ -37,11 +48,13 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function sendToApi(data){
+    xhr.send(data);
+}
+
 function setKeywordText(text) {
     var el =  document.getElementsByClassName('_24sbNUBZcOO5r5rr66_bs4')[0]
     el.value = text;
     var evt= new Event('focus');
     el.dispatchEvent(evt);
 }
-
-
