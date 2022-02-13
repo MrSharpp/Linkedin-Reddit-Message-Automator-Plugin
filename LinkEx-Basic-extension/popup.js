@@ -1,5 +1,6 @@
 let selectedQueries = new Set();
 let totalNum = 0;
+var cookieAuth;
 
 // var popupWindow = window.open(
 //     chrome.extension.getURL("popup.html"),
@@ -24,15 +25,15 @@ chrome.tabs.onUpdated.addListener(function (tabId , info) {
 
 
 document.addEventListener('DOMContentLoaded', async function(){
-        await chrome.cookies.get({"url":"http://localhost:3000", "name":"auth"},(abc) => {
-            if(!abc) {
-                $("#loggedInSection").hide()
-                $("#loggedOutSection").show()
-            }else{
+    await chrome.cookies.get({"url":"http://localhost:3000", "name":"auth"},(abc) => {
+        if(!abc) {
+            $("#loggedInSection").hide()
+            $("#loggedOutSection").show()
+        }else{
+                cookieAuth = JSON.stringify(abc).value 
                 $("#loggedInSection").show()
                 $("#loggedOutSection").hide()
             }
-            const cookies = JSON.stringify(abc).value 
         })
 });
 
@@ -142,4 +143,4 @@ $("[ref-tab]").click(function(e){
 
 
 
-document.getElementsByClassName('follow-use')[0].innerText = localStorage.getItem('userIds')+'/150';
+// document.getElementsByClassName('follow-use')[0].innerText = localStorage.getItem('userIds')+'/150';
