@@ -15,9 +15,11 @@ chrome.tabs.onUpdated.addListener(function (tabId , info) {
   });
 
 
-document.addEventListener('DOMContentLoaded', function(){
-    var hi = document.getElementsByClassName('_3TG57N4WQtubLLo8SbAXVF');
-        console.log(hi[0])
+document.addEventListener('DOMContentLoaded', async function(){
+        await chrome.cookies.get({"url":"http://localhost:3000", "name":"auth"},(abc) => {
+            if(!abc) return alert("NOT LOGGED IN")
+            const cookies = JSON.stringify(abc).value 
+        })
   });
 
 $(".follow").click(function(){
@@ -65,6 +67,8 @@ function getCookies(domain, name, callback) {
         }
     });
 }
+
+//usage:
 
 //usage:
 
