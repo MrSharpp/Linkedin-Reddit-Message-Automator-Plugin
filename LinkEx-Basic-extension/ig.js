@@ -40,17 +40,15 @@ window.onload = async function  exampleFunction() {
         }
     }
     else if (_url.search("keywords") > -1) {
-        document.getElementsByClassName('artdeco-pill')[1].click()
-        const companies = document.getElementsByClassName('entity-result__title-text')
-        document.getElementsByClassName('artdeco-pill')[4].click()
-        document.getElementsByClassName('mt1')[2].value = "Manager"
-        
+        await SendMessagesToLinkedInUsers()
+        window.scrollTo(0,document.body.scrollHeight);
+        await sleep(500)
+        document.getElementsByClassName('artdeco-pagination__button artdeco-pagination__button--next artdeco-button artdeco-button--muted artdeco-button--icon-right artdeco-button--1 artdeco-button--tertiary ember-view')[0].click()
+        SendMessagesToLinkedInUsers()
+
     }
 }
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
 
 function sendToApi(data){
     xhr.send(data);
@@ -62,3 +60,34 @@ function setKeywordText(text) {
     var evt= new Event('focus');
     el.dispatchEvent(evt);
 }
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+
+async function SendMessagesToLinkedInUsers(){
+    var users = document.getElementsByClassName('entity-result__actions entity-result__divider')
+    for(var n = 0; n < users.length;n++){
+        if(users[n].children[0].innerText == "Follow") continue;
+        var id = users[n].children[0].attributes.id.value
+        console.log(id)
+        document.getElementById(id).click()
+        // users[n].children[0].click() 
+        try{
+        await sleep(1000)
+        document.getElementsByClassName('artdeco-button artdeco-button--muted artdeco-button--2 artdeco-button--secondary ember-view mr1')[0].click()
+        await sleep(1000)
+        document.getElementsByClassName('ember-text-area ember-view connect-button-send-invite__custom-message mb3')[0].value = "aa12"
+        await sleep(1000)
+        var sendButton =  document.getElementsByClassName('artdeco-button artdeco-button--2 artdeco-button--primary ember-view ml1')[0]
+        var evt= new Event('click');
+        sendButton.dispatchEvent(evt)
+        await sleep(1000)
+        }catch(err){
+            console.log(err)
+        }   
+    }
+}
+
+
