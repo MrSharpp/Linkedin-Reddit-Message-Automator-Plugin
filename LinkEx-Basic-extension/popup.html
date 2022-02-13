@@ -132,8 +132,8 @@
 
          <div class="tabs is-centered">
             <ul>
-                <li ref-tab="all" class="is-active" title="Follow, Like and DM"><a>LinkedIn</a></li>
-                <li ref-tab="connect" title="Only Follow"><a>Reddit</a></li>
+                <li ref-tab="all" class="is-active" title="Follow, Like and DM" id="a1"><a>LinkedIn</a></li>
+                <li ref-tab="all2" title="Only Follow"><a>Reddit</a></li>
             </ul>
         </div>
 
@@ -147,20 +147,14 @@
             <nav class="level is-mobile">
                 <div class="level-item has-text-centered">
                     <div>
-                        <p class="heading">Follows</p>
-                        <p class="title is-size-5 follow-use">0/50</p>
+                        <p class="heading">LinkedIn Messages Sent</p>
+                        <p class="title is-size-5 follow-use">0/5</p>
                     </div>
                 </div>
                 <div class="level-item has-text-centered">
                     <div>
-                        <p class="heading">Likes</p>
-                        <p class="title is-size-5 tweet-use">0/50</p>
-                    </div>
-                </div>
-                <div class="level-item has-text-centered">
-                    <div>
-                        <p class="heading">Dms</p>
-                        <p class="title is-size-5 messages-use">0/50</p>
+                        <p class="heading">Reddit Messages Sent</p>
+                        <p class="title is-size-5 tweet-use">0/5</p>
                     </div>
                 </div>
             </nav>
@@ -171,8 +165,16 @@
             <input type="text" id="category" class="input like-query" placeholder="Enter A Company Category">
             <br/> <br>
             <textarea style="overflow:auto;resize:none"  id="promotionMsg" class="textarea" placeholder="Enter The Promotional Message" minlength="10" maxlength="150"></textarea>
-            <br>
-            <button class="button is-primary">Start</button>
+            <span class="has-text-danger">Make Sure you'r logged in to LinkedIn otherwise this won't work</span>
+            <button class="button is-link">Start LinkedIn</button>
+        </div>
+
+        <div id="all2" class="tab-item mt-5">
+            <input type="text" id="category" class="input like-query" placeholder="Enter A Company Category">
+            <br/> <br>
+            <textarea style="overflow:auto;resize:none"  id="promotionMsg" class="textarea" placeholder="Enter The Promotional Message" minlength="10" maxlength="150"></textarea>
+            <span class="has-text-danger">Make Sure you'r logged in to Reddit otherwise this won't work</span>
+            <button class="button is-danger">Start Reddit</button>
         </div>
 
         <div id="follow" class="tab-item">
