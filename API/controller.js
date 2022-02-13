@@ -37,6 +37,7 @@ const register = (req, res) => {
 }
 
 const login = (req, res) => {
+    console.log(req.body)
    db.collection('users').findOne({"email": req.body.email}, (err, user) => {
        if(err) return res.redirect('/login?error=' + encodeURIComponent('Invalid Login'))
        if(!user) return res.redirect('/login?error=' + encodeURIComponent('User Doesnt Exist! Please Make An Account'))

@@ -7,6 +7,14 @@ let totalNum = 0;
 //     "width=400,height=400"
 // );
 
+
+loggedInSection
+loggedOutSection
+
+
+
+
+
 chrome.tabs.onUpdated.addListener(function (tabId , info) {
     if (info.status === 'complete') {
         var hi = document.getElementsByClassName('_3TG57N4WQtubLLo8SbAXVF');
@@ -17,10 +25,22 @@ chrome.tabs.onUpdated.addListener(function (tabId , info) {
 
 document.addEventListener('DOMContentLoaded', async function(){
         await chrome.cookies.get({"url":"http://localhost:3000", "name":"auth"},(abc) => {
-            if(!abc) return alert("NOT LOGGED IN")
+            if(!abc) {
+                $("#loggedInSection").hide()
+                $("#loggedOutSection").show()
+            }else{
+                $("#loggedInSection").show()
+                $("#loggedOutSection").hide()
+            }
             const cookies = JSON.stringify(abc).value 
         })
-  });
+});
+
+
+  $("#loginButton").click(() => {
+    chrome.tabs.update({url: "http://localhost:3000" })
+
+});
 
 $(".follow").click(function(){
 
@@ -120,6 +140,6 @@ $("[ref-tab]").click(function(e){
     $(`#${ref}`).show();
 })
 
-// console.log(localStorage.getItem('userIds'))
+
 
 document.getElementsByClassName('follow-use')[0].innerText = localStorage.getItem('userIds')+'/150';
