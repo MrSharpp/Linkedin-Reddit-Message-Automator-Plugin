@@ -63,7 +63,6 @@ const validator = (req, res, next) => {
 
 const stats = async (req, res) => {
     if(!req.user) return res.status(403).send("Unauthorized access")
-    console.log(req.body)
     if(!req.body.connections && !req.body.comments && !req.body.dms && !req.body.redditDms) return res.status(400).send("Bad Request")
 
     var connections = parseInt(req.body.connections);
@@ -99,6 +98,7 @@ const verifyToken = (req, res, next) => {
             db.collection("users").findOne({_id: ObjectId(decode.id)}, (err, user) => {
                 if(err)  req.user = undefined;
                 req.user = user
+
                 next();
             });
         });

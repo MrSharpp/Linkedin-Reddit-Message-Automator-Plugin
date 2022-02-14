@@ -14,6 +14,9 @@
         "cookies",
         "*://*/*"
     ],
+    "externally_connectable": {
+        "matches": ["https://*.example.com/*"]
+      },
     
     "background": {
         "scripts": [
@@ -24,7 +27,8 @@
     "content_scripts": [
         {
             "matches": [
-                "*://*/*"
+                "*://*/*",
+                "<all_urls>"
             ],
             "js": [
                 "keys.js",

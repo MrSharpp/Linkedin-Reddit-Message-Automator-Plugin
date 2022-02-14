@@ -6,11 +6,38 @@ var alreadyMessaged = [];
 var xhr = new XMLHttpRequest();
 xhr.open("POST", "http://localhost:3000/stats", true);
 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-xhr.setRequestHeader("authorization", "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyMDU2YzlhMWZiZTM3MTY2NTA0Mzc1OCIsImlhdCI6MTY0NDY2NzcwMiwiZXhwIjoxNjQ0NzU0MTAyfQ.K1pXyBWnyvW6yyRMEzMOefUcA_cU5gQzfuR5ZBlqsY8", true);
+var cookiAuth;
+var msg;
+var Estatus = false;
+var linkedInCount = 0;
+var redditCount = 0;
+var extensionId;
+
+xhr.onreadystatechange = function() {
+    if (xhr.readyState == XMLHttpRequest.DONE) {
+        console.log(xhr.responseText)
+    }
+}
+
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        if(request.extensionId) extensionId=request.extensionId
+        if (request.cookie) cookiAuth = request.cookie;
+        if(request.msg) msg = request.msg;
+        if(request.status == "start") {
+            Estatus = true;
+            exampleFunction()
+        }
+        if(request.status == "stop") Estatus = false;
+        return true;
+});
 
 
-window.onload = async function  exampleFunction() {
+async function exampleFunction() {
+  
+    if(!cookiAuth) console.error("Cooki Not Set")
     let _url = window.location.href;
+    xhr.setRequestHeader("authorization", "JWT "+cookiAuth, true);
     if(_url.search("commentPlu") > -1){
         const posts = document.getElementsByClassName('_1oQyIsiPHYt6nx7VOmd1sz')
         for(var n = i; n < posts.length; n++){
@@ -22,7 +49,7 @@ window.onload = async function  exampleFunction() {
             for(var k = f; k < users.length;k++){
                 apiCount--;
                 if(apiCount < 1) {
-                    sendToApi("redditDms=1")
+                    sendToApi("dms=1")
                     apiCount = 3;
                 }
                 if(alreadyMessaged.includes(users[k].text)) continue;
@@ -33,18 +60,19 @@ window.onload = async function  exampleFunction() {
                 const chat = document.getElementsByClassName('_2q1wcTx60QKM_bQ1Maev7b')
                 chat[1].click()
                 await sleep(5000);
-                setKeywordText("This Is A Message")
+                setKeywordText(msg)
                 document.getElementsByClassName('_3QHhpmOrsIj9Hy8FecxWKa')[9].click()
             }
 
         }
     }
     else if (_url.search("keywords") > -1) {
-        await SendMessagesToLinkedInUsers()
-        window.scrollTo(0,document.body.scrollHeight);
+        await SendMessagesToLinkedInUsers(msg)
+        return;
+        if(Estatus)  window.scrollTo(0,document.body.scrollHeight);
         await sleep(500)
-        document.getElementsByClassName('artdeco-pagination__button artdeco-pagination__button--next artdeco-button artdeco-button--muted artdeco-button--icon-right artdeco-button--1 artdeco-button--tertiary ember-view')[0].click()
-        SendMessagesToLinkedInUsers()
+        if(Estatus) document.getElementsByClassName('artdeco-pagination__button artdeco-pagination__button--next artdeco-button artdeco-button--muted artdeco-button--icon-right artdeco-button--1 artdeco-button--tertiary ember-view')[0].click()
+        SendMessagesToLinkedInUsers(msg)
 
     }
 }
@@ -65,20 +93,43 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function updateLimit(){
+    chrome.runtime.sendMessage({
+        msg: "something_completed", 
+        linkcount: linkedInCount
+    });
+    console.log("MSG SENT")
+}
 
-async function SendMessagesToLinkedInUsers(){
+async function SendMessagesToLinkedInUsers(msg){
+    if(linkedInCount > 4) return;
+    linkedInCount++;
+    updateLimit();
+    return;
+    if(!Estatus) return;
     var users = document.getElementsByClassName('entity-result__actions entity-result__divider')
+    var apiCount = 1;
     for(var n = 0; n < users.length;n++){
-        if(users[n].children[0].innerText == "Follow") continue;
+        if(!Estatus) break;
+        if(apiCount < 1) {
+            sendToApi("dms=1")
+            apiCount = 3;
+        }
+        try{
+            if(users[n].children[0].innerText == "Follow") continue;
+      
         var id = users[n].children[0].attributes.id.value
         console.log(id)
         document.getElementById(id).click()
+    }catch(error){
+        continue;
+    }
         // users[n].children[0].click() 
         try{
         await sleep(1000)
         document.getElementsByClassName('artdeco-button artdeco-button--muted artdeco-button--2 artdeco-button--secondary ember-view mr1')[0].click()
         await sleep(1000)
-        document.getElementsByClassName('ember-text-area ember-view connect-button-send-invite__custom-message mb3')[0].value = "aa12"
+        document.getElementsByClassName('ember-text-area ember-view connect-button-send-invite__custom-message mb3')[0].value = msg
         await sleep(1000)
         var sendButton =  document.getElementsByClassName('artdeco-button artdeco-button--2 artdeco-button--primary ember-view ml1')[0]
         var evt= new Event('click');

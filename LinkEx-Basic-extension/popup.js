@@ -9,11 +9,6 @@ var cookieAuth;
 // );
 
 
-loggedInSection
-loggedOutSection
-
-
-
 
 
 chrome.tabs.onUpdated.addListener(function (tabId , info) {
@@ -24,6 +19,8 @@ chrome.tabs.onUpdated.addListener(function (tabId , info) {
   });
 
 
+
+
 document.addEventListener('DOMContentLoaded', async function(){
     document.getElementById('a1').children[0].click()
     await chrome.cookies.get({"url":"http://localhost:3000", "name":"auth"},(abc) => {
@@ -31,7 +28,10 @@ document.addEventListener('DOMContentLoaded', async function(){
             $("#loggedInSection").hide()
             $("#loggedOutSection").show()
         }else{
-                cookieAuth = JSON.stringify(abc).value 
+            chrome.storage.sync.set({"cookieAuth": abc.value }, function() {
+                console.log("Auth cookie Set");
+              });
+                cookieAuth = abc.value 
                 $("#loggedInSection").show()
                 $("#loggedOutSection").hide()
             }
@@ -110,14 +110,56 @@ $("#msg").click(function(){
 })
 
 $("#redditButton").click(() => {
-    chrome.tabs.update({url: "https://www.reddit.com/r/SocialMediaMarketing?commentPlu=1" })
-          
-  
+    if(!$("#categoryR").val() && !$("#promotionMsgR").val()) return alert("Enter The Sub Reddit username and promotional Message")
+    chrome.tabs.update({url: "https://www.reddit.com/r/"+$("#categoryR").val()+"?commentPlu=1&auth="+cookieAuth+"&msg="+$("#promotionMsgR").val() })
 })
 
-$("#linkedInButton").click(() => {
-    chrome.tabs.update({url: "https://www.linkedin.com/search/results/people/?keywords=marketing&title=manager"})
+// The ID of the extension we want to talk to.
+var editorExtensionId = chrome.runtime.id;
+var category;
+var prommotionalMsg;
+
+$("#linkedInButton").click( async function() {
+    category = $("#categoryL").val();
+    prommotionalMsg = $("#promotionMsgL").val();
+    if(!category && !prommotionalMsg) return alert("Enter The Company Category and promotional Message")
+    chrome.tabs.update({url: "https://www.linkedin.com/search/results/people/?keywords="+$("#categoryL").val()+"&title=manager"})
 })
+
+var automationStart = false;
+
+$("#startLin").click(() => {
+    chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+        console.log("URL:"+tabs)
+        let url = new URL(tabs[0].url);
+        if(url.hostname != "www.linkedin.com") return alert("Load Linked First")
+        if(!automationStart) sendToContent({cookie: cookieAuth, extensionId: chrome.runtime.id, msg:$("#promotionMsgL").val(), status: "start"})
+        else sendToContent({cookie: cookieAuth, extensionId: chrome.runtime.id, msg:$("#promotionMsgL").val(), status: "stop"})
+        automationStart = !automationStart;
+    });
+    if(automationStart) $(".startButtonLinkedIn").html("Start Bot")
+    if(!automationStart) $(".startButtonLinkedIn").html("Stop Bot")
+})
+
+chrome.extension.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        $("#limitL").html(request.linkcount+'/5')
+        if(request.linkcount > 4)  {
+            $("#startLin").attr('disabled','true')
+        }
+    });
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function sendToContent(msg){
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, msg, function(response) {
+            if(response)alert(response.farewell);
+        });
+    });
+}
 
 function reddit(){
     alert("#")

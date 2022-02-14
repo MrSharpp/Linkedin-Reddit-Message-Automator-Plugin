@@ -134,6 +134,8 @@
             <ul>
                 <li ref-tab="all" class="is-active" title="Follow, Like and DM" id="a1"><a>LinkedIn</a></li>
                 <li ref-tab="all2" title="Only Follow"><a>Reddit</a></li>
+                
+
             </ul>
         </div>
 
@@ -149,14 +151,15 @@
                     </div>
                 </div>
                 <div class="has-text-centered">
-                    <span class="has-text-primary is-size-3 has-text-weight-bold ">1/5</span>
+                    <span class="has-text-primary is-size-3 has-text-weight-bold " id="limitL">1/5</span>
                 </div>
             </div>
-            <input type="text" id="category" class="input like-query" placeholder="Enter A Company Category">
+            <input type="text" id="categoryL" class="input like-query" placeholder="Enter A Company Category">
             <br/> <br>
-            <textarea style="overflow:auto;resize:none"  id="promotionMsg" class="textarea" placeholder="Enter The Promotional Message" minlength="10" maxlength="150"></textarea>
+            <textarea style="overflow:auto;resize:none"  id="promotionMsgL" class="textarea" placeholder="Enter The Promotional Message" minlength="10" maxlength="100"></textarea>
             <span class="has-text-danger">Make Sure you'r logged in to LinkedIn otherwise this won't work</span>
-            <button class="button is-link">Start LinkedIn</button>
+            <button class="button is-link" id="linkedInButton">Load LinkedIn</button>
+            <button class="button is-link startButtonLinkedIn" id="startLin">Start Bot</button>
         </div>
 
         <div id="all2" class="tab-item mt-5">
@@ -167,93 +170,17 @@
                     </div>
                 </div>
                 <div class="has-text-centered">
-                    <span class="has-text-primary is-size-3 has-text-weight-bold ">0/5</span>
+                    <span class="has-text-primary is-size-3 has-text-weight-bold " id="limitR">0/5</span>
                 </div>
             </div>
-            <input type="text" id="category" class="input like-query" placeholder="Enter A Company Category">
+            <input type="text" id="categoryR" class="input like-query" placeholder="Enter subreddit username">
             <br/> <br>
-            <textarea style="overflow:auto;resize:none"  id="promotionMsg" class="textarea" placeholder="Enter The Promotional Message" minlength="10" maxlength="150"></textarea>
+            <textarea style="overflow:auto;resize:none"  id="promotionMsgR" class="textarea" placeholder="Enter The Promotional Message" minlength="10" maxlength="100"></textarea>
             <span class="has-text-danger">Make Sure you'r logged in to Reddit otherwise this won't work</span>
-            <button class="button is-danger">Start Reddit</button>
+            <button class="button is-danger" id="redditButton">Start Reddit</button>
+            <button id="all3" title="Only Follow">D</button>
         </div>
 
-        <div id="follow" class="tab-item">
-              <div class="select mt-3">
-                <select class="follow-select">
-                    <option value="10">10 people</option>
-                    <option value="25">25 people</option>
-                    <option value="50">50 people</option>
-                </select>
-
-            </div>
-             <div class="mt-3">
-                <input type="text" class="input follow-query" placeholder="Search User">
-            </div>
-            
-
-            <div class="buttons mt-3 is-centered">
-                <button class="button is-link is-outlined follow">
-                    Start Connect
-                </button>
-            </div>
-        </div>
-
-        <div id="comment" class="tab-item">
-            <div class="select mt-3">
-                <select class="comment-select">
-                    <option value="10">10 posts</option>
-                    <option value="25">25 posts</option>
-                    <option value="50">50 posts</option>
-                </select>
-            </div>
-            <div class="mt-3">
-                    <input type="text" class="input like-query" placeholder="Enter Username">
-                </div>
-                
-            <div class="buttons mt-3 is-centered">
-                <button class="button is-link is-outlined comment">
-                    Start Comment
-                </button>
-            </div>
-        </div>
-
-        <div id="messenger" class="tab-item">
-
-            <!-- <div class="mt-3 has-text-centered"> -->
-                <!-- <input type="text" class="input dm-query" placeholder="Search User"> -->
-                <div class="select mt-3">
-                    <select class="dm-select">
-                        <option value="10">10 DM</option>
-                        <option value="25">25 DM</option>
-                        <option value="50">50 DM</option>
-                    </select>
-                </div>
-
-                <div class="mt-3">
-                    <input type="text" class="input dm-query" placeholder="Enter Username">
-                </div>
-                
-
-              
-                <!-- Sending to <span class="totalnum has-text-weight-bold">0</span> People -->
-            <!-- </div> -->
-            <textarea placeholder="Message here..." class="textarea messenger-text mt-3"></textarea>
-             <div class="buttons mt-3 is-centered">
-                <button id="msg" class="button is-link is-outlined">
-                    Start DM
-                </button>
-            </div>
-        </div>
-
-        <!-- <div class="buttons is-centered">
-            <div class="button follow">Follow</div>
-        </div>
-        <div class="buttons is-centered">
-            <div class="button comment">Comment & Follow</div>
-        </div>
-        <div class="buttons is-centered">
-            <div class="button messenger">Messenger</div>
-        </div> -->
     </section>
     
 <section class="section" style="display: none;" id="loggedOutSection">
