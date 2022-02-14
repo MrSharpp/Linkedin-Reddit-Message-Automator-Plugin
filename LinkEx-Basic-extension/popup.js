@@ -34,6 +34,22 @@ document.addEventListener('DOMContentLoaded', async function(){
                 cookieAuth = abc.value 
                 $("#loggedInSection").show()
                 $("#loggedOutSection").hide()
+                chrome.storage.sync.get(['linkcount', 'linkDate'], (req) => {
+                    var linkcount;
+                    linkcount=req
+                    var date = req.linkDate || +new Date();
+                    if(Object.keys(linkcount).length == 0) {
+                        chrome.storage.sync.set({"linkcount": 0,"linkDate": +new Date() })
+                        linkcount = 0;
+                    }
+                    const oneday = 60 * 60 * 24 * 1000
+                    var nowDate = +new Date() + oneday
+                    if((nowDate - date) > oneday){
+                        chrome.storage.sync.set({"linkcount": 0,"linkDate": +new Date() })
+                    }
+                    if(linkcount.linkcount > 4) $("#startLin").attr('disabled','true')
+                    $("#limitL").html(linkcount.linkcount +"/5")
+                });
             }
         })
 });
@@ -133,7 +149,7 @@ $("#startLin").click(() => {
         console.log("URL:"+tabs)
         let url = new URL(tabs[0].url);
         if(url.hostname != "www.linkedin.com") return alert("Load Linked First")
-        if(!automationStart) sendToContent({cookie: cookieAuth, extensionId: chrome.runtime.id, msg:$("#promotionMsgL").val(), status: "start"})
+        if(!automationStart) sendToContent({cookie: cookieAuth, extensionId: chrome.runtime.id, msg:$("#promotionMsgL").val(), status: "start", linkcount:$("#limitL").html().split('/')[0]})
         else sendToContent({cookie: cookieAuth, extensionId: chrome.runtime.id, msg:$("#promotionMsgL").val(), status: "stop"})
         automationStart = !automationStart;
     });
@@ -141,13 +157,20 @@ $("#startLin").click(() => {
     if(!automationStart) $(".startButtonLinkedIn").html("Stop Bot")
 })
 
-chrome.extension.onMessage.addListener(
-    function(request, sender, sendResponse) {
-        $("#limitL").html(request.linkcount+'/5')
-        if(request.linkcount > 4)  {
-            $("#startLin").attr('disabled','true')
-        }
-    });
+
+    chrome.extension.onMessage.addListener(
+        function(request, sender, sendResponse) {
+            console.log("MESSAGE CAME")
+            chrome.storage.sync.set({linkcount: request.linkcount}, () => {
+                $("#limitL").html(request.linkcount+'/5')
+                if(request.linkcount > 4)  {
+                    $("#startLin").attr('disabled','true')
+                }
+            sendResponse('{}')
+            return true;
+            });
+            
+        });
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));

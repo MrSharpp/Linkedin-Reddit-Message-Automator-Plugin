@@ -21,6 +21,7 @@ xhr.onreadystatechange = function() {
 
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
+        if(request.linkcount) linkedInCount = request.linkcount
         if(request.extensionId) extensionId=request.extensionId
         if (request.cookie) cookiAuth = request.cookie;
         if(request.msg) msg = request.msg;
@@ -68,7 +69,6 @@ async function exampleFunction() {
     }
     else if (_url.search("keywords") > -1) {
         await SendMessagesToLinkedInUsers(msg)
-        return;
         if(Estatus)  window.scrollTo(0,document.body.scrollHeight);
         await sleep(500)
         if(Estatus) document.getElementsByClassName('artdeco-pagination__button artdeco-pagination__button--next artdeco-button artdeco-button--muted artdeco-button--icon-right artdeco-button--1 artdeco-button--tertiary ember-view')[0].click()
@@ -93,37 +93,36 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function updateLimit(){
-    chrome.runtime.sendMessage({
-        msg: "something_completed", 
+async function updateLimit(){
+    await chrome.runtime.sendMessage({
         linkcount: linkedInCount
     });
     console.log("MSG SENT")
 }
 
 async function SendMessagesToLinkedInUsers(msg){
-    if(linkedInCount > 4) return;
-    linkedInCount++;
-    updateLimit();
-    return;
     if(!Estatus) return;
     var users = document.getElementsByClassName('entity-result__actions entity-result__divider')
-    var apiCount = 1;
     for(var n = 0; n < users.length;n++){
         if(!Estatus) break;
-        if(apiCount < 1) {
-            sendToApi("dms=1")
-            apiCount = 3;
-        }
+        if(linkedInCount > 4) return;
         try{
             if(users[n].children[0].innerText == "Follow") continue;
       
         var id = users[n].children[0].attributes.id.value
         console.log(id)
         document.getElementById(id).click()
-    }catch(error){
-        continue;
-    }
+        }catch(error){
+            continue;
+        }
+        linkedInCount++;
+        await sleep(1000)
+        updateLimit();
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "http://localhost:3000/stats", true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.setRequestHeader("authorization", "JWT "+cookiAuth, true);
+        xhr.send("dms=1");
         // users[n].children[0].click() 
         try{
         await sleep(1000)
@@ -139,6 +138,7 @@ async function SendMessagesToLinkedInUsers(msg){
             console.log(err)
         }   
     }
+
 }
 
 
