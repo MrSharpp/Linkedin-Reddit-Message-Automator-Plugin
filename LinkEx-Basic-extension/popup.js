@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', async function(){
                         chrome.storage.sync.set({"linkcount": 0,"linkDate": +new Date() })
                     }
                     if(linkcount.linkcount > 4) $("#startLin").attr('disabled','true')
-                    $("#limitL").html(linkcount.linkcount +"/5")
+                    $("#limitL").html(linkcount.linkcount +"/15")
                 });
             }
         })
@@ -138,8 +138,10 @@ var prommotionalMsg;
 $("#linkedInButton").click( async function() {
     category = $("#categoryL").val();
     prommotionalMsg = $("#promotionMsgL").val();
+    var skip = parseInt($("#skipPeople").val()) / 10
+    skip = String(skip).split('.')[0]
     if(!category && !prommotionalMsg) return alert("Enter The Company Category and promotional Message")
-    chrome.tabs.update({url: "https://www.linkedin.com/search/results/people/?keywords="+$("#categoryL").val()+"&title=manager"})
+    chrome.tabs.update({url: "https://www.linkedin.com/search/results/people/?keywords="+$("#categoryL").val()+"&title=manager&page="+skip})
 })
 
 var automationStart = false;
@@ -162,8 +164,8 @@ $("#startLin").click(() => {
         function(request, sender, sendResponse) {
             console.log("MESSAGE CAME")
             chrome.storage.sync.set({linkcount: request.linkcount}, () => {
-                $("#limitL").html(request.linkcount+'/5')
-                if(request.linkcount > 4)  {
+                $("#limitL").html(request.linkcount+'/15')
+                if(request.linkcount > 14)  {
                     $("#startLin").attr('disabled','true')
                 }
             sendResponse('{}')

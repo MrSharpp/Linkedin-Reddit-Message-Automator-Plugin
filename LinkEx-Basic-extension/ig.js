@@ -68,15 +68,22 @@ async function exampleFunction() {
         }
     }
     else if (_url.search("keywords") > -1) {
-        await SendMessagesToLinkedInUsers(msg)
-        if(Estatus)  window.scrollTo(0,document.body.scrollHeight);
-        await sleep(500)
-        if(Estatus) document.getElementsByClassName('artdeco-pagination__button artdeco-pagination__button--next artdeco-button artdeco-button--muted artdeco-button--icon-right artdeco-button--1 artdeco-button--tertiary ember-view')[0].click()
-        SendMessagesToLinkedInUsers(msg)
+            startLinkedIn(msg)
 
     }
 }
 
+async function startLinkedIn(msg){
+    await SendMessagesToLinkedInUsers(msg)
+
+    if(linkedInCount < 15) {
+        if(Estatus)  window.scrollTo(0,document.body.scrollHeight);
+        await sleep(500)
+        if(Estatus) document.getElementsByClassName('artdeco-pagination__button artdeco-pagination__button--next artdeco-button artdeco-button--muted artdeco-button--icon-right artdeco-button--1 artdeco-button--tertiary ember-view')[0].click()
+        startLinkedIn(msg)
+    }
+    
+}
 
 function sendToApi(data){
     xhr.send(data);
@@ -105,7 +112,7 @@ async function SendMessagesToLinkedInUsers(msg){
     var users = document.getElementsByClassName('entity-result__actions entity-result__divider')
     for(var n = 0; n < users.length;n++){
         if(!Estatus) break;
-        if(linkedInCount > 4) return;
+        if(linkedInCount > 14) return;
         try{
             if(users[n].children[0].innerText == "Follow") continue;
       
@@ -115,9 +122,7 @@ async function SendMessagesToLinkedInUsers(msg){
         }catch(error){
             continue;
         }
-        linkedInCount++;
-        await sleep(1000)
-        updateLimit();
+        
         var xhr = new XMLHttpRequest();
         xhr.open("POST", "http://localhost:3000/stats", true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -137,6 +142,9 @@ async function SendMessagesToLinkedInUsers(msg){
         }catch(err){
             console.log(err)
         }   
+        linkedInCount++;
+        await sleep(1000)
+        updateLimit();
     }
 
 }
