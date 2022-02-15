@@ -49,11 +49,11 @@ async function reddit(){
         const users = document.getElementsByClassName('wM6scouPXXsFDSZmZPHRo')
         for(var k = f; k < users.length;k++){
             if(!Estatus) break;
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "http://localhost:3000/stats", true);
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            xhr.setRequestHeader("authorization", "JWT "+cookiAuth, true);
-            xhr.send("redditDms=1");
+            // var xhr = new XMLHttpRequest();
+            // xhr.open("POST", "http://localhost:3000/stats", true);
+            // xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            // xhr.setRequestHeader("authorization", "JWT "+cookiAuth, true);
+            // xhr.send("redditDms=1");
             if(alreadyMessaged.includes(users[k].text)) continue;
             alreadyMessaged.push(users[k].text);
             f++;
@@ -135,11 +135,11 @@ async function SendMessagesToLinkedInUsers(msg){
             continue;
         }
         
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "http://localhost:3000/stats", true);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.setRequestHeader("authorization", "JWT "+cookiAuth, true);
-        xhr.send("dms=1");
+        // var xhr = new XMLHttpRequest();
+        // xhr.open("POST", "http://localhost:3000/stats", true);
+        // xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        // xhr.setRequestHeader("authorization", "JWT "+cookiAuth, true);
+        // xhr.send("dms=1");
         // users[n].children[0].click() 
         try{
         await sleep(1000)

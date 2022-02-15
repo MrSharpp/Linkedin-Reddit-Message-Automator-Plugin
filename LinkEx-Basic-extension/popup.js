@@ -22,18 +22,22 @@ chrome.tabs.onUpdated.addListener(function (tabId , info) {
 
 
 document.addEventListener('DOMContentLoaded', async function(){
-    document.getElementById('a1').children[0].click()
+    document.getElementById('a3').children[0].click()
     await chrome.cookies.get({"url":"http://localhost:3000", "name":"auth"},(abc) => {
-        if(!abc) {
-            $("#loggedInSection").hide()
-            $("#loggedOutSection").show()
-        }else{
-            chrome.storage.sync.set({"cookieAuth": abc.value }, function() {
-                console.log("Auth cookie Set");
-              });
-                cookieAuth = abc.value 
-                $("#loggedInSection").show()
-                $("#loggedOutSection").hide()
+                chrome.storage.sync.get(['redCount', 'linCount' ], (req) => {
+                    var redCount = req.redCount;
+                    var linCount = req.linCount;
+                    if(!redCount && !linCount){
+                        alert(redCount)
+                        chrome.storage.sync.set({"redCount": 0, "linCount":0})
+                        redCount = 0;
+                        linCount = 0;
+                    }
+                    $("#redCount").html(redCount)
+                    $("#linCount").html(linCount)
+
+                })
+
                 chrome.storage.sync.get(['linkcount', 'linkDate'], (req) => {
                     var linkcount;
                     linkcount=req.linkcount
@@ -68,7 +72,6 @@ document.addEventListener('DOMContentLoaded', async function(){
                     $("#limitR").html(redditCount +"/15")
                 });
 
-            }
         })
 });
 
@@ -196,23 +199,35 @@ $("#startRid").click(() => {
 
     chrome.extension.onMessage.addListener(
         function(request, sender, sendResponse) {
+            var redCount
+            var linCount
+            chrome.storage.sync.get(['redCount','linCount'], (req) => {
+                redCount  = req.redCount;
+                linCount = req.linCount;
+            
+            
             if(request.linkcount){
-                chrome.storage.sync.set({linkcount: request.linkcount}, () => {
-
+                chrome.storage.sync.set({linkcount: request.linkcount, "linCount": linCount}, () => {
+                    linCount =parseInt(linCount) + 1;
+                    $("#linCount").html(linCount)
                     $("#limitL").html(request.linkcount+'/15')
                     if(request.linkcount > 14)  {
                         $("#startLin").attr('disabled','true')
                     }
-            });
-
+                });
+                
             }else if(request.redditcount){
-                chrome.storage.sync.set({redditCount: request.redditcount}, () => {
+                redCount = parseInt(redCount) + 1;
+                $("#redCount").html(redCount)
+                chrome.storage.sync.set({redditCount: request.redditcount, "redCount": redCount}, () => {
                     $("#limitR").html(request.redditcount+'/15')
                     if(request.redditcount > 14)  {
                         $("#startRid").attr('disabled','true')
                     }
              });
             }
+
+        })
             
 
             sendResponse('{}')

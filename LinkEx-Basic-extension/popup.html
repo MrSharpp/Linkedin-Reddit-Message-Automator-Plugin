@@ -112,6 +112,20 @@
         .block:not(:last-child) {
   margin-bottom: 1.5rem;
 }
+
+#content { 
+  overflow:auto; 
+  width: 300px; 
+} 
+
+#left, #right { 
+  width: 40%; 
+  margin:5px; 
+  padding: 1em; 
+} 
+
+#left  { float:left;  }
+#right { float:right; } 
     </style>
 </head>
 
@@ -134,7 +148,7 @@
             <ul>
                 <li ref-tab="all" class="is-active" title="Follow, Like and DM" id="a1"><a>LinkedIn</a></li>
                 <li ref-tab="all2" title="Only Follow" id="a2"><a>Reddit</a></li>
-                
+                <li ref-tab="all3" title="Only Follow" id="a3"><a>Dashboard</a></li>
 
             </ul>
         </div>
@@ -180,6 +194,23 @@
             <span class="has-text-danger">Make Sure you'r logged in to Reddit otherwise this won't work</span>
             <button class="button is-danger" id="redditButton">Load Reddit</button>
             <button class="button is-danger startButtonReddit" id="startRid">Start Reddit</button>
+        </div>
+
+        <div id="all3" class="tab-item mt-5">
+            <h1 class="has-text-centered  has-text-dark  is-size-4 mb-4" style="font-weight: bold;">Dashboard</h1>
+            <div id="content">
+                <div id="left">
+                  <span class="has-text-danger is-size-4" style="font-weight: bold;">Reddit</span>
+                  <br>
+                  <span class="has-text-primary is-size-2 " style="padding-left: 20px;" id="redCount">2</span>
+                </div>
+              
+                <div id="right">
+                    <span class="has-text-link is-size-4" style="font-weight: bold;">LinkedIn</span>
+                    <br>
+                    <span class="has-text-primary is-size-2 " style="padding-left: 35px;" id="linCount">2</span>
+                </div>
+              </div>
         </div>
 
     </section>
