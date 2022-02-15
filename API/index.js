@@ -29,16 +29,16 @@ app.use('/', (req, res) => {
    res.send("JHELLO")
 });
 
-// app.listen(3000, (port) => {
-//    console.log("App Is Listening")
-// });
+app.listen(3000, (port) => {
+   console.log("App Is Listening")
+});
 
-const server = http.createServer((req, res) => {
-   res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/plain');
-  res.end('Hello World! NodeJS \n');
-})
+// const server = http.createServer((req, res) => {
+//    res.statusCode = 200;
+//   res.setHeader('Content-Type', 'text/plain');
+//   res.end('Hello World! NodeJS \n');
+// })
 
-server.listen(port, () => {
-   console.log(`Server running at http://${hostname}:${port}/`);
-})
+// server.listen(port, () => {
+//    console.log(`Server running at http://${hostname}:${port}/`);
+// })
