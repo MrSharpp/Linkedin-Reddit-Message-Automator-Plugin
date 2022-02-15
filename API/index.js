@@ -1,6 +1,6 @@
 var express = require('express');
 var app = express();
-var router = require('./router.js');
+// var router = require('./router.js');
 var bodyparsera = require('body-parser')
 const cookieParser = require("cookie-parser");
 const http = require('http')
@@ -39,6 +39,6 @@ const server = http.createServer((req, res) => {
   res.end('Hello World! NodeJS \n');
 })
 
-server.listen(port, hostname, () => {
+server.listen(port, () => {
    console.log(`Server running at http://${hostname}:${port}/`);
 })
