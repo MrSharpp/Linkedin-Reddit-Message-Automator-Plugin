@@ -22,7 +22,7 @@ chrome.tabs.onUpdated.addListener(function (tabId , info) {
 
 
 document.addEventListener('DOMContentLoaded', async function(){
-    document.getElementById('a2').children[0].click()
+    document.getElementById('a1').children[0].click()
     await chrome.cookies.get({"url":"http://localhost:3000", "name":"auth"},(abc) => {
         if(!abc) {
             $("#loggedInSection").hide()
@@ -206,7 +206,6 @@ $("#startRid").click(() => {
             });
 
             }else if(request.redditcount){
-                alert("AA")
                 chrome.storage.sync.set({redditCount: request.redditcount}, () => {
                     $("#limitR").html(request.redditcount+'/15')
                     if(request.redditcount > 14)  {
