@@ -24,7 +24,10 @@ app.use(bodyparsera.urlencoded({ extended: false }));
 app.use(express.static('web/src'))
 app.use(cookieParser());
 
-app.use('/', router);
+app.use('/', (req, res) => {
+   console.log("hello")
+   res.send("JHELLO")
+});
 
 // app.listen(3000, (port) => {
 //    console.log("App Is Listening")
