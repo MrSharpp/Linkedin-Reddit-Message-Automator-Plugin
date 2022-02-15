@@ -29,48 +29,60 @@ chrome.runtime.onMessage.addListener(
             Estatus = true;
             exampleFunction()
         }
+        if(request.status == "startR") {
+            Estatus = true;
+            reddit()
+        }
         if(request.status == "stop") Estatus = false;
         return true;
 });
 
-
-async function exampleFunction() {
-  
+async function reddit(){
     if(!cookiAuth) console.error("Cooki Not Set")
-    let _url = window.location.href;
-    xhr.setRequestHeader("authorization", "JWT "+cookiAuth, true);
-    if(_url.search("commentPlu") > -1){
-        const posts = document.getElementsByClassName('_1oQyIsiPHYt6nx7VOmd1sz')
-        for(var n = i; n < posts.length; n++){
-            i++;
-            posts[n].click()
-            await sleep(3000);
-            const users = document.getElementsByClassName('wM6scouPXXsFDSZmZPHRo')
-            var apiCount = 1;
-            for(var k = f; k < users.length;k++){
-                apiCount--;
-                if(apiCount < 1) {
-                    sendToApi("dms=1")
-                    apiCount = 3;
-                }
-                if(alreadyMessaged.includes(users[k].text)) continue;
-                alreadyMessaged.push(users[k].text);
-                f++;
-                users[k].click()
-                await sleep(2000);
-                const chat = document.getElementsByClassName('_2q1wcTx60QKM_bQ1Maev7b')
-                chat[1].click()
-                await sleep(5000);
-                setKeywordText(msg)
-                document.getElementsByClassName('_3QHhpmOrsIj9Hy8FecxWKa')[9].click()
-            }
-
+    const posts = document.getElementsByClassName('_1oQyIsiPHYt6nx7VOmd1sz')
+    for(var n = i; n < posts.length; n++){
+        if(!Estatus) break;
+        if(redditCount > 14) return;
+        i++;
+        posts[n].click()
+        await sleep(3000);
+        const users = document.getElementsByClassName('wM6scouPXXsFDSZmZPHRo')
+        for(var k = f; k < users.length;k++){
+            if(!Estatus) break;
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:3000/stats", true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.setRequestHeader("authorization", "JWT "+cookiAuth, true);
+            xhr.send("redditDms=1");
+            if(alreadyMessaged.includes(users[k].text)) continue;
+            alreadyMessaged.push(users[k].text);
+            f++;
+            users[k].click()
+            await sleep(2000);
+            const chat = document.getElementsByClassName('_2q1wcTx60QKM_bQ1Maev7b')
+            chat[1].click()
+            await sleep(5000);
+            setKeywordText(msg)
+            document.getElementsByClassName('_3QHhpmOrsIj9Hy8FecxWKa')[9].click()
+            redditCount++
+        await sleep(1000)
+        updateRLimit();
         }
     }
-    else if (_url.search("keywords") > -1) {
-            startLinkedIn(msg)
+}
 
-    }
+async function updateRLimit(){
+    await chrome.runtime.sendMessage({
+        redditcount: redditCount
+    });
+    console.log("MSG SENT")
+}
+
+
+async function exampleFunction() {
+    if(!cookiAuth) console.error("Cooki Not Set")
+    xhr.setRequestHeader("authorization", "JWT "+cookiAuth, true);
+    startLinkedIn(msg)
 }
 
 async function startLinkedIn(msg){

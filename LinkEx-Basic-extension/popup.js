@@ -22,7 +22,7 @@ chrome.tabs.onUpdated.addListener(function (tabId , info) {
 
 
 document.addEventListener('DOMContentLoaded', async function(){
-    document.getElementById('a1').children[0].click()
+    document.getElementById('a2').children[0].click()
     await chrome.cookies.get({"url":"http://localhost:3000", "name":"auth"},(abc) => {
         if(!abc) {
             $("#loggedInSection").hide()
@@ -36,20 +36,38 @@ document.addEventListener('DOMContentLoaded', async function(){
                 $("#loggedOutSection").hide()
                 chrome.storage.sync.get(['linkcount', 'linkDate'], (req) => {
                     var linkcount;
-                    linkcount=req
+                    linkcount=req.linkcount
                     var date = req.linkDate || +new Date();
-                    if(Object.keys(linkcount).length == 0) {
+                    if(!linkcount) {
                         chrome.storage.sync.set({"linkcount": 0,"linkDate": +new Date() })
                         linkcount = 0;
                     }
                     const oneday = 60 * 60 * 24 * 1000
-                    var nowDate = +new Date() + oneday
+                    var nowDate = +new Date()
                     if((nowDate - date) > oneday){
                         chrome.storage.sync.set({"linkcount": 0,"linkDate": +new Date() })
                     }
-                    if(linkcount.linkcount > 4) $("#startLin").attr('disabled','true')
-                    $("#limitL").html(linkcount.linkcount +"/15")
+                    if(linkcount > 4) $("#startLin").attr('disabled','true')
+                    $("#limitL").html(linkcount +"/15")
                 });
+
+                chrome.storage.sync.get(['redditCount', 'redditDate'], (req) => {
+                    var redditCount;
+                    redditCount=req.redditCount
+                    var date = req.redditDate || +new Date();
+                    if(!redditCount) {
+                        chrome.storage.sync.set({"redditCount": 0,"redditDate": +new Date() })
+                        redditCount = 0;
+                    }
+                    const oneday = 60 * 60 * 24 * 1000
+                    var nowDate = +new Date()
+                    if((nowDate - date) > oneday){
+                        chrome.storage.sync.set({"redditCount": 0,"redditDate": +new Date() })
+                    }
+                    if(redditCount > 4) $("#startRid").attr('disabled','true')
+                    $("#limitR").html(redditCount +"/15")
+                });
+
             }
         })
 });
@@ -126,8 +144,8 @@ $("#msg").click(function(){
 })
 
 $("#redditButton").click(() => {
-    if(!$("#categoryR").val() && !$("#promotionMsgR").val()) return alert("Enter The Sub Reddit username and promotional Message")
-    chrome.tabs.update({url: "https://www.reddit.com/r/"+$("#categoryR").val()+"?commentPlu=1&auth="+cookieAuth+"&msg="+$("#promotionMsgR").val() })
+    if(!$("#categoryR").val() || !$("#promotionMsgR").val()) return alert("Enter The Sub Reddit username and promotional Message")
+    chrome.tabs.update({url: "https://www.reddit.com/r/"+$("#categoryR").val()})
 })
 
 // The ID of the extension we want to talk to.
@@ -140,11 +158,14 @@ $("#linkedInButton").click( async function() {
     prommotionalMsg = $("#promotionMsgL").val();
     var skip = parseInt($("#skipPeople").val()) / 10
     skip = String(skip).split('.')[0]
-    if(!category && !prommotionalMsg) return alert("Enter The Company Category and promotional Message")
-    chrome.tabs.update({url: "https://www.linkedin.com/search/results/people/?keywords="+$("#categoryL").val()+"&title=manager&page="+skip})
+    if(skip < 1) skip = 1
+    if(!category || !prommotionalMsg || !$("#titleL").val() || !skip) return alert("Enter The Company Category and promotional Message")
+    chrome.tabs.update({url: "https://www.linkedin.com/search/results/people/?keywords="+$("#categoryL").val()+"&title="+$("#titleL").val()+"&page="+skip})
 })
 
 var automationStart = false;
+var RautomationStart = false;
+
 
 $("#startLin").click(() => {
     chrome.tabs.query({active: true, currentWindow: true}, tabs => {
@@ -152,25 +173,52 @@ $("#startLin").click(() => {
         let url = new URL(tabs[0].url);
         if(url.hostname != "www.linkedin.com") return alert("Load Linked First")
         if(!automationStart) sendToContent({cookie: cookieAuth, extensionId: chrome.runtime.id, msg:$("#promotionMsgL").val(), status: "start", linkcount:$("#limitL").html().split('/')[0]})
-        else sendToContent({cookie: cookieAuth, extensionId: chrome.runtime.id, msg:$("#promotionMsgL").val(), status: "stop"})
+        else sendToContent({ extensionId: chrome.runtime.id, status: "stop"})
         automationStart = !automationStart;
     });
     if(automationStart) $(".startButtonLinkedIn").html("Start Bot")
     if(!automationStart) $(".startButtonLinkedIn").html("Stop Bot")
 })
 
+$("#startRid").click(() => {
+    chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+        console.log("URL:"+tabs)
+        let url = new URL(tabs[0].url);
+        if(url.hostname != "www.reddit.com") return alert("Load Reddit First")
+        if(!RautomationStart) sendToContent({cookie: cookieAuth, extensionId: chrome.runtime.id, msg:$("#promotionMsgR").val(), status: "startR", linkcount:$("#limitR").html().split('/')[0]})
+        else sendToContent({extensionId: chrome.runtime.id, status: "stop"})
+        RautomationStart = !RautomationStart;
+    });
+    if(RautomationStart) $(".startButtonReddit").html("Start Bot")
+    if(!RautomationStart) $(".startButtonReddit").html("Stop Bot")
+})
+
 
     chrome.extension.onMessage.addListener(
         function(request, sender, sendResponse) {
-            console.log("MESSAGE CAME")
-            chrome.storage.sync.set({linkcount: request.linkcount}, () => {
-                $("#limitL").html(request.linkcount+'/15')
-                if(request.linkcount > 14)  {
-                    $("#startLin").attr('disabled','true')
-                }
+            if(request.linkcount){
+                chrome.storage.sync.set({linkcount: request.linkcount}, () => {
+
+                    $("#limitL").html(request.linkcount+'/15')
+                    if(request.linkcount > 14)  {
+                        $("#startLin").attr('disabled','true')
+                    }
+            });
+
+            }else if(request.redditcount){
+                alert("AA")
+                chrome.storage.sync.set({redditCount: request.redditcount}, () => {
+                    $("#limitR").html(request.redditcount+'/15')
+                    if(request.redditcount > 14)  {
+                        $("#startRid").attr('disabled','true')
+                    }
+             });
+            }
+            
+
             sendResponse('{}')
             return true;
-            });
+
             
         });
 
