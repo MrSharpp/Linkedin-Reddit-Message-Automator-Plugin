@@ -9,7 +9,7 @@ const res = require('express/lib/response');
 const { redirect } = require('express/lib/response');
 
 
-mongoose.connect(process.env.DB_URL || 'mongodb://localhost:27017/linkedin');
+mongoose.connect('mongodb+srv://root:Root1194@cluster0.knk2u.mongodb.net/data?retryWrites=true&w=majority');
 var db=mongoose.connection;
 db.on('error', console.log.bind(console, "connection error"));
 db.once('open', function(callback){
