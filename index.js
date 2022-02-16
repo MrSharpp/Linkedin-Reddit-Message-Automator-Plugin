@@ -5,6 +5,21 @@ const http = require('http');
 var bodyparsera = require('body-parser')
 const cookieParser = require("cookie-parser");
 
+const normalizePort = val => {
+   const port = parseInt(val, 10);
+ 
+   if (isNaN(port)) {
+     return val;
+   }
+   if (port >= 0) {
+     return port;
+   }
+   return false;
+ };
+
+ const port = normalizePort(process.env.PORT || '3000');
+ app.set('port', port);
+
    app.use(function (req, res, next) {
 
       res.setHeader('Access-Control-Allow-Origin', '*');
@@ -25,10 +40,10 @@ app.use(cookieParser());
 //    console.log("App Is Listening")
 // });
 const server = http.createServer(app);
-server.listen(3000);
+server.listen(port);
 
 server.on('listening', () => {
    const address = server.address();
-   const bind = typeof address === 'string' ? 'pipe ' + address : 'port ' + 3000;
+   const bind = typeof address === 'string' ? 'pipe ' + address : 'port ' + port;
    console.log('Listening on ' + bind);
  });
