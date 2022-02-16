@@ -188,6 +188,7 @@ var RautomationStart = false;
 
 
 $("#startLin").click(() => {
+    if(!$("#promotionMsgL").val()) return alert("Enter Promotional Message")
     chrome.tabs.query({active: true, currentWindow: true}, tabs => {
         console.log("URL:"+tabs)
         let url = new URL(tabs[0].url);
@@ -274,3 +275,20 @@ $("[ref-tab]").click(function(e){
     $(`#${ref}`).show();
 })
 
+$("#findC").click(() => {
+    chrome.tabs.update({url: "https://www.linkedin.com/search/results/people/?keywords="+$("#categoryL").val()})
+})
+
+$("#findT").click(() => {
+    if(!$("#categoryL").val()) return alert("Type A Niche")
+    chrome.tabs.update({url: "https://www.linkedin.com/search/results/people/?keywords="+$("#categoryL").val()+"&title="+$("#titleL").val()})
+})
+
+$("#skipPeopleButton").click(() => {
+    if(!$("#categoryL").val()) return alert("Type A Niche")
+    var skip = parseInt($("#skipPeople").val()) / 10
+    skip = String(skip).split('.')[0]
+    if(skip < 1) skip = 1
+    if(!$("#titleL").val()) return chrome.tabs.update({url: "https://www.linkedin.com/search/results/people/?keywords="+$("#categoryL").val()+"&title="+$("#titleL").val()+"&page="+skip})
+    chrome.tabs.update({url: "https://www.linkedin.com/search/results/people/?keywords="+$("#categoryL").val()+"&page="+skip})
+})
