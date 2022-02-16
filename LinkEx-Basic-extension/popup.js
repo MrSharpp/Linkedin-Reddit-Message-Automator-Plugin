@@ -28,7 +28,6 @@ document.addEventListener('DOMContentLoaded', async function(){
                     var redCount = req.redCount;
                     var linCount = req.linCount;
                     if(!redCount && !linCount){
-                        alert(redCount)
                         chrome.storage.sync.set({"redCount": 0, "linCount":0})
                         redCount = 0;
                         linCount = 0;
@@ -207,8 +206,8 @@ $("#startRid").click(() => {
             
             
             if(request.linkcount){
+                linCount =parseInt(linCount) + 1;
                 chrome.storage.sync.set({linkcount: request.linkcount, "linCount": linCount}, () => {
-                    linCount =parseInt(linCount) + 1;
                     $("#linCount").html(linCount)
                     $("#limitL").html(request.linkcount+'/15')
                     if(request.linkcount > 14)  {
@@ -243,24 +242,10 @@ function sleep(ms) {
 function sendToContent(msg){
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         chrome.tabs.sendMessage(tabs[0].id, msg, function(response) {
-            if(response)alert(response.farewell);
+            if(response) return;
         });
     });
 }
-
-function reddit(){
-    alert("#")
-}
-
-function openTab(){
-        let redditLink = "https://www.reddit.com/r/SocialMediaMarketing" 
-        chrome.tabs.create ({url: redditLink, 
-        selected: true});
-};
-
-$(".comment").click(function(){
-
-})
 
 $("[ref-tab]").click(function(e){
     let target =  $(e.target).parent();
@@ -271,6 +256,3 @@ $("[ref-tab]").click(function(e){
     $(`#${ref}`).show();
 })
 
-
-
-// document.getElementsByClassName('follow-use')[0].innerText = localStorage.getItem('userIds')+'/150';
