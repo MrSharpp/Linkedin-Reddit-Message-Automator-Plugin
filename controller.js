@@ -131,7 +131,9 @@ const signOut = (req, res, next) => {
 }
 
 const dashboard = (req, res, next) => {
+    console.log(req.user)
     db.collection("stats").findOne({userid: ObjectId(req.user._id)}, (err, user) => {
+        if(!user) return res.redirect('/dashboard?redditM='+0+"&connections="+0+"&comments="+0+"&dms="+0)
         res.redirect('/dashboard?redditM='+user.redditDms+"&connections="+user.connections+"&comments="+user.comments+"&dms="+user.dms)
     });
 }
