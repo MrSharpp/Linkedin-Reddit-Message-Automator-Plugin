@@ -9,7 +9,8 @@ const res = require('express/lib/response');
 const { redirect } = require('express/lib/response');
 
 
-mongoose.connect('mongodb+srv://root:Root1194@cluster0.knk2u.mongodb.net/data?retryWrites=true&w=majority');
+// mongoose.connect('mongodb+srv://root:Root1194@cluster0.knk2u.mongodb.net/data?retryWrites=true&w=majority');
+mongoose.connect('mongodb://localhost:27017/linkedin');
 var db=mongoose.connection;
 db.on('error', console.log.bind(console, "connection error"));
 db.once('open', function(callback){
@@ -98,12 +99,16 @@ const verifyToken = (req, res, next) => {
             db.collection("users").findOne({_id: ObjectId(decode.id)}, (err, user) => {
                 if(err)  req.user = undefined;
                 req.user = user
+                console.log(decode.id)
+        console.log("HIOa1")
 
                 next();
             });
         });
       } else {
         req.user = undefined;
+        console.log("HIOa")
+
         next();
       }
 }
@@ -131,11 +136,27 @@ const signOut = (req, res, next) => {
 }
 
 const dashboard = (req, res, next) => {
-    console.log(req.user)
-    db.collection("stats").findOne({userid: ObjectId(req.user._id)}, (err, user) => {
-        if(!user) return res.redirect('/dashboard?redditM='+0+"&connections="+0+"&comments="+0+"&dms="+0)
-        res.redirect('/dashboard?redditM='+user.redditDms+"&connections="+user.connections+"&comments="+user.comments+"&dms="+user.dms)
-    });
+    // console.log(req.user)
+    // db.collection("stats").findOne({userid: ObjectId(req.user._id)}, (err, user) => {
+    //     if(!user) return res.redirect('/dashboard?redditM='+0+"&connections="+0+"&comments="+0+"&dms="+0)
+    //     res.redirect('/dashboard?redditM='+user.redditDms+"&connections="+user.connections+"&comments="+user.comments+"&dms="+user.dms)
+    // });
 }
 
-module.exports = {register, login, validator, stats, verifyToken, verifyAuth, signOut, dashboard}
+const table = (req, res, next) => {
+    if(!req.query.platform) var platform = "LinkedIn";
+    else var platform = req.query.platform; 
+    res.sendFile(path.join(__dirname+'/web/table.html'))
+}
+
+const getStats = async (req, res) => {
+    if(!req.user) return res.status(403).send("Unauthorized access")
+    var user = await db.collection('stats').findOne({userid: req.user._id});
+    if(!user){
+      await db.collection('stats').insertOne({userid: req.user._id, rows: [{profile: "Amir Alam", Company: "TheDexk", Designation:"CEO", Date: "14 Feb 2020"}], comments: 0, redditComments: 0, redditDms: 0,dms: 0});
+       user = await db.collection('stats').findOne({userid: req.user._id});  
+    }
+    res.json(user)
+}
+
+module.exports = {register, login, validator, stats, verifyToken, verifyAuth, signOut, dashboard, table, getStats}

@@ -18,12 +18,30 @@ chrome.tabs.onUpdated.addListener(function (tabId , info) {
     }
   });
 
+  function getCookies(domain, name, callback) {
+    chrome.cookies.get({"url": domain, "name": name}, function(cookie) {
+        if(callback) {
+            callback(cookie.value);
+        }
+    });
+}
+
+
 
 
 
 document.addEventListener('DOMContentLoaded', async function(){
-    document.getElementById('a3').children[0].click()
+    document.getElementById('a1').children[0].click()
     await chrome.cookies.get({"url":"http://localhost:3000", "name":"auth"},(abc) => {
+        if(!abc) {
+            $("#loggedInSection").hide()
+            $("#loggedOutSection").show()
+        }else{
+                cookieAuth = JSON.stringify(abc).value 
+                $("#loggedInSection").show()
+                $("#loggedOutSection").hide()
+                return;
+            }
                 chrome.storage.sync.get(['redCount', 'linCount' ], (req) => {
                     var redCount = req.redCount;
                     var linCount = req.linCount;

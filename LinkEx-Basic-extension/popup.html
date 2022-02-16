@@ -146,9 +146,9 @@
 
          <div class="tabs is-centered">
             <ul>
-                <li ref-tab="all3" title="Only Follow"  id="a3" class="is-active"><a>Dashboard</a></li>
-                <li ref-tab="all"  title="Follow, Like and DM"  id="a1"><a>LinkedIn</a></li>
+                <li ref-tab="all"  title="Follow, Like and DM" class="is-active"  id="a1"><a>LinkedIn</a></li>
                 <li ref-tab="all2" title="Only Follow" id="a2"><a>Reddit</a></li>
+                <li id="a3"  ><a target="_blank" href="http://localhost:3000" onclick="">Dashboard</a></li>
 
             </ul>
         </div>
@@ -183,13 +183,47 @@
                     <span class="has-text-primary is-size-3 has-text-weight-bold " id="limitL">0/15</span>
                 </div>
             </div>
-            <input type="text" id="categoryL" class="input like-query" placeholder="Enter A Company Category" value="Marketing">
-            <input class="input mt-1" type="text" placeholder="Title" id="titleL" maxlength="10" value="Manager">
+            <label class="has-text-link" style="font-weight: bold;">1. Niche</label>
+            <!-- <input type="text" id="categoryL" class="input like-query" placeholder="Enter A Company Category" value="Marketing"> -->
+            <div class="field has-addons">
+                <div class="control">
+                  <input class="input" type="text" id="categoryL" placeholder="Enter A Company Category" value="Marketing">
+                </div>
+                <div class="control">
+                  <a class="button is-info">
+                    Find
+                  </a>
+                </div>
+              </div>
+            <label class="has-text-link" style="font-weight: bold;">2. Title / Designation</label>
+            <!-- <input type="text" id="categoryL" class="input like-query" placeholder="Enter A Company Category" value="Marketing"> -->
+            <div class="field has-addons">
+                <div class="control">
+                  <input class="input" type="text" id="categoryL" placeholder="Enter Title/Designation" value="Manager">
+                </div>
+                <div class="control">
+                  <a class="button is-info">
+                    Find
+                  </a>
+                </div>
+              </div>
+            <label class="has-text-link" style="font-weight: bold;">3. Promotional Message</label>
             <textarea style="overflow:auto;resize:none"  id="promotionMsgL" class="textarea mt-1" placeholder="Enter The Promotional Message" minlength="10" maxlength="100"></textarea>
-            <input class="input mt-1" type="text" placeholder="Skip Peoples (In Numbers)" id="skipPeople" value="0" maxlength="3">
+            <label class="has-text-link" style="font-weight: bold;">(Optional) Targets To Skip</label>
+            <!-- <input class="input mt-1" type="text" placeholder="Skip Peoples (In Numbers)" id="skipPeople" value="0" maxlength="3"> -->
+            <div class="field has-addons">
+                <div class="control">
+                    <input class="input" type="text" placeholder="Skip Peoples (In Numbers)" id="skipPeople" value="0" maxlength="3">
+                </div>
+                <div class="control">
+                  <a class="button is-info">
+                    Find
+                  </a>
+                </div>
+              </div>
             
             <span class="has-text-danger">Make Sure you'r logged in to LinkedIn otherwise this won't work</span>
-            <button class="button is-link" id="linkedInButton">Load LinkedIn</button>
+            <!-- <button class="button is-link" id="linkedInButton">Load LinkedIn</button> -->
             <button class="button is-link startButtonLinkedIn" id="startLin">Start Bot</button>
         </div>
 
@@ -204,7 +238,9 @@
                     <span class="has-text-primary is-size-3 has-text-weight-bold " id="limitR">0/15</span>
                 </div>
             </div>
+            <label class="has-text-link" style="font-weight: bold;">Subreddit Username</label>
             <input type="text" id="categoryR" class="input like-query" placeholder="Enter subreddit username" value="SocialMediaMarketing">
+            <label class="has-text-link" style="font-weight: bold;">Promotional Message</label>
             <textarea style="overflow:auto;resize:none"  id="promotionMsgR" class="textarea mt-1" placeholder="Enter The Promotional Message" minlength="10" maxlength="100"></textarea>
             <span class="has-text-danger">Make Sure you'r logged in to Reddit otherwise this won't work</span>
             <button class="button is-danger" id="redditButton">Load Reddit</button>
