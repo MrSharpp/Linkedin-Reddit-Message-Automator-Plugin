@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
-var router = require('./router.js');
+const http = require('http');
+// var router = require('./router.js');
 var bodyparsera = require('body-parser')
 const cookieParser = require("cookie-parser");
 
@@ -11,9 +12,6 @@ const cookieParser = require("cookie-parser");
       res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,application/x-www-form-urlencoded');
       res.setHeader('Access-Control-Allow-Credentials', "true");
       res.setHeader('Access-Control-Allow-Headers', "authorization");
-
-       
-  
       next();
   });
 
@@ -21,8 +19,16 @@ app.use(bodyparsera.urlencoded({ extended: false }));
 app.use(express.static('web/src'))
 app.use(cookieParser());
 
-app.use('/', router);
+// app.use('/', router);
 
-app.listen(3000, (port) => {
-   console.log("App Is Listening")
-});
+// app.listen(3000, (port) => {
+//    console.log("App Is Listening")
+// });
+const server = http.createServer(app);
+server.listen(3000);
+
+server.on('listening', () => {
+   const address = server.address();
+   const bind = typeof address === 'string' ? 'pipe ' + address : 'port ' + 3000;
+   console.log('Listening on ' + bind);
+ });
