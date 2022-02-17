@@ -210,8 +210,8 @@
 
           const countries = new Set();
           rows.forEach(element => {
-            if(element.Country == undefined) return;
-            countries.add(element.Country)
+            if(element.country == undefined) return;
+            countries.add(element.country)
           });
           $("#countries").html(countries.size)
 
@@ -220,10 +220,9 @@
           const reddit = res.rowsR;
           $("#messagesReddit").html(reddit.length)
 
-          const reddit2 = res.subreddit;
           const subreddits = new Set();
-          reddit2.forEach(element => {
-            subreddits.add(element.subreddits)
+          reddit.forEach(element => {
+            subreddits.add(element.subreddit)
           });
           $("#messagesReddit2").html(subreddits.size)
 

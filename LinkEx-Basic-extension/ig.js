@@ -36,9 +36,10 @@ chrome.runtime.onMessage.addListener(
         if(request.status == "stop") Estatus = false;
         return true;
 });
-
+var subreddit;
 async function reddit(){
     if(!cookiAuth) console.error("Cooki Not Set")
+    subreditt = window.location.href.split('/')[4];
     const posts = document.getElementsByClassName('_1oQyIsiPHYt6nx7VOmd1sz')
     for(var n = i; n < posts.length; n++){
         if(!Estatus) break;
@@ -49,11 +50,15 @@ async function reddit(){
         const users = document.getElementsByClassName('wM6scouPXXsFDSZmZPHRo')
         for(var k = f; k < users.length;k++){
             if(!Estatus) break;
-            // var xhr = new XMLHttpRequest();
-            // xhr.open("POST", "http://localhost:3000/stats", true);
-            // xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            // xhr.setRequestHeader("authorization", "JWT "+cookiAuth, true);
-            // xhr.send("redditDms=1");
+            var name = users[k].innerText
+            var href = users[k].href
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:3000/stats", true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.setRequestHeader("authorization", "JWT "+cookiAuth, true);
+            xhr.send("name="+name+"&href="+href+"&subreddit="+subreditt);
+
             if(alreadyMessaged.includes(users[k].text)) continue;
             alreadyMessaged.push(users[k].text);
             f++;
@@ -121,25 +126,31 @@ async function updateLimit(){
 
 async function SendMessagesToLinkedInUsers(msg){
     if(!Estatus) return;
-    var users = document.getElementsByClassName('entity-result__actions entity-result__divider')
+    var users = document.getElementsByClassName('entity-result__item')
     for(var n = 0; n < users.length;n++){
         if(!Estatus) break;
         if(linkedInCount > 14) return;
         try{
-            if(users[n].children[0].innerText == "Follow") continue;
-      
-        var id = users[n].children[0].attributes.id.value
-        console.log(id)
+        if(users[n].children[2].children[0].innerText == "Follow") continue;
+        var name = users[n].children[1].children[0].children[0].children[0].children[0].children[0].children[0].innerText.split('\n')[0];
+        var href = users[n].children[1].children[0].children[0].children[0].children[0].children[0].children[0].href;
+        var title = users[n].children[1].children[0].children[1].children[0].children[0].innerText;
+        var country = users[n].children[1].children[0].children[1].children[0].children[1].innerText
+        var id = users[n].children[2].children[0].attributes.id.value
         document.getElementById(id).click()
         }catch(error){
             continue;
         }
         
-        // var xhr = new XMLHttpRequest();
-        // xhr.open("POST", "http://localhost:3000/stats", true);
-        // xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        // xhr.setRequestHeader("authorization", "JWT "+cookiAuth, true);
-        // xhr.send("dms=1");
+        var url_string = window.location.href;
+        var url = new URL(url_string);
+        var c = url.searchParams.get("keywords");
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "http://localhost:3000/stats", true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.setRequestHeader("authorization", "JWT "+cookiAuth, true);
+        xhr.send("name="+name+"&href="+href+"&title="+title+"&country="+country+"&niche="+c);
         // users[n].children[0].click() 
         try{
         await sleep(1000)
@@ -152,7 +163,7 @@ async function SendMessagesToLinkedInUsers(msg){
         sendButton.dispatchEvent(evt)
         await sleep(1000)
         }catch(err){
-            console.log(err)
+            console.log("ERRPR:"+err)
         }   
         linkedInCount++;
         await sleep(1000)

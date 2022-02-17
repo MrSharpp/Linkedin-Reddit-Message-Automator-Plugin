@@ -108,12 +108,20 @@
                   </p>
                   <div class="table-responsive">
                     <table class="table">
-                      <thead>
+                      <thead id="lHead">
                         <tr>
                           <th>Profile</th>
                           <th>Sector</th>
                           <th>Country</th>
                           <th>Designation</th>
+                          <th>Targetted On</th>
+                        </tr>
+                      </thead>
+
+                      <thead id="rHead">
+                        <tr>
+                          <th>Name</th>
+                          <th>Subreddit</th>
                           <th>Targetted On</th>
                         </tr>
                       </thead>
@@ -148,6 +156,14 @@
       var platform = "LinkedIn";
       if(searchParams.has('platform')) platform = searchParams.get('platform')
       $("[id=platform]").html(platform)
+      if(platform == 'Reddit') {
+        $("#lHead").hide()
+        $("#rHead").show()
+      }
+      else {
+        $("#lHead").show()
+        $("#rHead").hide()
+      }
       $.ajax({
         url: "http://localhost:3000/stats",
         type: "GET",
@@ -161,13 +177,15 @@
             var rows = res.rows
           rows.forEach(element => {
             console.log(element.Date)
-            $("#tableBody").append('<tr><td>'+element.profile+'</td><td>'+element.Niche+'</td><td>'+element.Country+'</td><td>'+element.Designation+'</td><td>'+element.Date+'</td></tr>')
+            const date = new Date(element.Date).toLocaleString().split(',')[0]
+            $("#tableBody").append('<tr><td><a target=”_blank” href="'+element.profile+'">'+element.name+'</a></td><td>'+element.niche+'</td><td>'+element.country+'</td><td>'+element.title+'</td><td>'+date+'</td></tr>')
           });
           }else{
             var rows = res.rowsR
           rows.forEach(element => {
-            console.log(element.Date)
-            $("#tableBody").append('<tr><td>'+element.profile+'</td><td>'+element.Niche+'</td><td>'+element.Country+'</td><td>'+element.Designation+'</td><td>'+element.Date+'</td></tr>')
+            console.log(element.href)
+            const date = new Date(element.Date).toLocaleString().split(',')[0]
+            $("#tableBody").append('<tr><td ><a target=”_blank” href="'+element.href+'">'+element.name+'</a></td><td>'+element.subreddit+'</td><td>'+date+'</td></tr>')
           });
           }
           

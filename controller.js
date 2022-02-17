@@ -64,25 +64,42 @@ const validator = (req, res, next) => {
 
 const stats = async (req, res) => {
     if(!req.user) return res.status(403).send("Unauthorized access")
-    if(!req.body.connections && !req.body.comments && !req.body.dms && !req.body.redditDms) return res.status(400).send("Bad Request")
+    // if(!req.body.connections && !req.body.comments && !req.body.dms && !req.body.redditDms) return res.status(400).send("Bad Request")
 
-    var connections = parseInt(req.body.connections);
-    var comments = parseInt(req.body.comments);
-    var dms = parseInt(req.body.dms);
+    var name = req.body.name;
+    var href = req.body.href;
+    var title = req.body.title;
+    var country = req.body.country;
+    var niche = req.body.niche;
 
-    var redditComments = parseInt(req.body.redditComments);
-    var redditDms = parseInt(req.body.redditDms);
+    var subreddit = req.body.subreddit;
 
     var user = await db.collection('stats').findOne({userid: req.user._id});
     if(!user){
-      user = await db.collection('stats').insertOne({userid: req.user._id, connections: 0, comments: 0, redditComments: 0, redditDms: 0,dms: 0});
+      await db.collection('stats').insertOne({userid: req.user._id, rows: [], rowsR: [] });
+      user = await db.collection('stats').findOne({userid: req.user._id});
     }
-    if(connections) user.connections = connections + parseInt(user.connections || 0);
-    if(comments) user.comments = comments + parseInt(user.comments || 0 );
-    if(dms) user.dms =  dms + parseInt(user.dms || 0);
-
-    if(redditComments) user.redditComments =  redditComments + parseInt(user.redditComments || 0);
-    if(redditDms) user.redditDms =  redditDms + parseInt(user.redditDms || 0);
+    var rows = user.rows;
+    var rowsR = user.rowsR;
+    if(name && href && title && country && niche){
+        rows.push({
+            name: name,
+            profile: href,
+            title: title,
+            country: country,
+            niche: niche,
+            Date:  Date.now()
+        })
+        user.rows = rows
+    }else{
+        rowsR.push({
+            name: name,
+            href: href,
+            subreddit: subreddit,
+            Date:  Date.now()
+        })
+        user.rowsR = rowsR
+    }
 
 
     db.collection('stats').updateOne({userid: req.user._id}, {$set:user}, (err, data) => {
@@ -95,7 +112,10 @@ const stats = async (req, res) => {
 const verifyToken = (req, res, next) => {
     if (req.headers && req.headers.authorization && req.headers.authorization.split(' ')[0] === 'JWT') {
         jwt.verify(req.headers.authorization.split(' ')[1], "SECRET_KEY", function (err, decode) {
-          if (err)  req.user = undefined;
+          if (err) {
+            console.log(err)
+              return res.status(403).send(err)}
+
             db.collection("users").findOne({_id: ObjectId(decode.id)}, (err, user) => {
                 if(err)  req.user = undefined;
                 req.user = user

@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', async function(){
             $("#loggedInSection").hide()
             $("#loggedOutSection").show()
         }else{
-                cookieAuth = JSON.stringify(abc).value 
+            cookieAuth = abc.value
                 $("#loggedInSection").show()
                 $("#loggedOutSection").hide()
                 return;
