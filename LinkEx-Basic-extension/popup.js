@@ -32,7 +32,7 @@ chrome.tabs.onUpdated.addListener(function (tabId , info) {
 
 document.addEventListener('DOMContentLoaded', async function(){
     document.getElementById('a1').children[0].click()
-    await chrome.cookies.get({"url":"http://localhost:3000", "name":"auth"},(abc) => {
+    await chrome.cookies.get({"url":"https://extension-linkedin.herokuapp.com", "name":"auth"},(abc) => {
         if(!abc) {
             $("#loggedInSection").hide()
             $("#loggedOutSection").show()
@@ -94,7 +94,12 @@ document.addEventListener('DOMContentLoaded', async function(){
 
 
   $("#loginButton").click(() => {
-    chrome.tabs.update({url: "http://localhost:3000" })
+    chrome.tabs.update({url: "https://extension-linkedin.herokuapp.com" })
+
+});
+
+$("#resignupbutton").click(() => {
+    chrome.tabs.update({url: "https://extension-linkedin.herokuapp.com/signup" })
 
 });
 
@@ -136,13 +141,6 @@ chrome.storage.local.get(['userIds'], function(result) {
      console.log(result)
 });
 
-function getCookies(domain, name, callback) {
-    chrome.cookies.get({"url": domain, "name": name}, function(cookie) {
-        if(callback) {
-            callback(cookie.value);
-        }
-    });
-}
 
 //usage:
 

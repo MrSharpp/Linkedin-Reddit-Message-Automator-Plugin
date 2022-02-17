@@ -80,7 +80,7 @@ const stats = async (req, res) => {
       user = await db.collection('stats').findOne({userid: req.user._id});
     }
     var rows = user.rows;
-    var rowsR = user.rowsR;
+    var rowsR = user.rowsR || [];
     if(name && href && title && country && niche){
         rows.push({
             name: name,

@@ -4,7 +4,7 @@ var i = 0;
 var f = 0;
 var alreadyMessaged = [];
 var xhr = new XMLHttpRequest();
-xhr.open("POST", "http://localhost:3000/stats", true);
+xhr.open("POST", "https://extension-linkedin.herokuapp.com/stats", true);
 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 var cookiAuth;
 var msg;
@@ -54,7 +54,7 @@ async function reddit(){
             var href = users[k].href
 
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", "http://localhost:3000/stats", true);
+            xhr.open("POST", "https://extension-linkedin.herokuapp.com/stats", true);
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xhr.setRequestHeader("authorization", "JWT "+cookiAuth, true);
             xhr.send("name="+name+"&href="+href+"&subreddit="+subreditt);
@@ -147,7 +147,7 @@ async function SendMessagesToLinkedInUsers(msg){
         var c = url.searchParams.get("keywords");
 
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "http://localhost:3000/stats", true);
+        xhr.open("POST", "https://extension-linkedin.herokuapp.com/stats", true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.setRequestHeader("authorization", "JWT "+cookiAuth, true);
         xhr.send("name="+name+"&href="+href+"&title="+title+"&country="+country+"&niche="+c);
