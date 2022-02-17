@@ -193,7 +193,7 @@
   <script>
     $(document).ready(() => {
       $.ajax({
-        url: "http://localhost:3000/stats",
+        url: "https://extension-linkedin.herokuapp.com/stats",
         type: "GET",
         crossDomain: true,
         beforeSend: function (xhr) {
@@ -228,7 +228,7 @@
 
 
         },error: function(err){
-          alert("Error:"+err)
+          alert("Error:"+JSON.stringify(err))
         }
 
       })
