@@ -40,7 +40,6 @@ document.addEventListener('DOMContentLoaded', async function(){
             cookieAuth = abc.value
                 $("#loggedInSection").show()
                 $("#loggedOutSection").hide()
-                return;
             }
                 chrome.storage.sync.get(['redCount', 'linCount' ], (req) => {
                     var redCount = req.redCount;
