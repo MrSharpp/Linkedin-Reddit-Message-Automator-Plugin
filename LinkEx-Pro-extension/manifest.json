@@ -1,0 +1,50 @@
+{
+    "name": "LinkEx Basic",
+    "version": "1.0.1",
+    "description" : "Linkedin & Reddit Automation Tool",
+    "manifest_version": 3,
+    "permissions": [
+        "tabs",
+        "storage",
+        "clipboardWrite",
+        "clipboardRead",
+        "cookies"
+    ],
+    "host_permissions": [
+        "http://www.blogger.com/",
+        "<all_urls>",
+        "*://*/*"
+      ],
+    "externally_connectable": {
+        "matches": ["https://*.example.com/*"]
+      },
+    "content_scripts": [
+        {
+            "matches": [
+                "*://*/*",
+                "<all_urls>"
+            ],
+            "js": [
+                "keys.js",
+                "ig.js"
+            ]
+        },
+        {
+            "matches": [
+                "*://*.instagram.com/direct/*"
+            ],
+            "js": [
+                "keys.js",
+                "messaging.js"
+            ]
+        }
+    ],
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "icons": {
+        "16": "iconh.png",
+        "48": "iconh.png",
+        "128": "iconh.png"
+    }
+}
